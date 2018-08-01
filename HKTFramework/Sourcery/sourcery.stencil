@@ -1,0 +1,287 @@
+{# To make this a bit more readable, think of  TYP type "A"        as being  Type<A>  #}
+{#                                       and   CONS type "A"       as being  Construct<TypeTag,A>  #}
+{#                                       and   GEN  type "A"       as being  <A>  #}
+{#                                       and   GEN2  type "A" "B"  as being  <A,B>  #}
+
+{# The macros are used to substitute in FixedType for 'DualConstructible' types #}
+
+{# GENERAL MACROS #}
+{% macro accessModifierOf type %}{% if type.accessLevel == '' or type.implements.DualConstructible %}public{% else %}{{ type.accessLevel }}{% endif %}{% endmacro %}
+{% macro actualType type %}{% if type.implements.DualConstructible %}ActualType<A> = {{ type.name }}<FixedType,A>{% else %}ActualType = {{ type.name }}{% endif %}{% endmacro %}
+{% macro tagWithAnnotation type %}{% if type.implements.DualConstructible %}{{ type.name }}Tag<FixedType{% if type|annotated:"FixedTypeConstraint" %}: {{ type.annotations.FixedTypeConstraint}} {% endif %}> : HKTTag {% if type|annotated:"FixedTypeWhere" %}, {{ type.annotations.FixedTypeWhere}} {% endif %}{% else %} {{ type.name }}Tag : HKTTag {% endif %}{% endmacro %}
+
+{# FixedType helper macros #}
+
+{% macro TAG type %}{% if type.implements.DualConstructible %}{{ type.name }}Tag<FixedType>{% else %}{{ type.name }}Tag{% endif %}{% endmacro %}
+{% macro GEN0 type %}{% if type.implements.DualConstructible %}<FixedType>{% else %}{% endif %}{% endmacro %}
+{% macro GEN type T %}{% if type.implements.DualConstructible %}<FixedType,{{T}}>{% else %}<{{T}}>{% endif %}{% endmacro %}
+{% macro GEN2 type S T %}{% if type.implements.DualConstructible %}<FixedType,{{S}},{{T}}>{% else %}<{{S}},{{T}}>{% endif %}{% endmacro %}
+{% macro GEN3 type S T U %}{% if type.implements.DualConstructible %}<FixedType,{{S}},{{T}},{{U}}>{% else %}<{{S}},{{T}},{{U}}>{% endif %}{% endmacro %}
+{% macro CONS type T %}{% if type.implements.DualConstructible %}Construct<{{ type.name }}Tag<FixedType>,{{T}}>{% else %}Construct<{{ type.name }}Tag,{{T}}>{% endif %}{% endmacro %}
+{% macro TC type %}{% if type.implements.DualConstructible %}_DualTypeConstructor{% else %}_TypeConstructor{% endif %}{% endmacro %}
+{% macro TYP type p %}{% if type.implements.DualConstructible %}{{ type.name }}<FixedType, {{p}}>{% else %}{{ type.name }}<{{p}}>{% endif %}{% endmacro %}
+
+
+{% for type in types.implementing.Constructible where type.name != "DualConstructible" %}
+
+//MARK: - HKT for {{type.name}}  {{type.accessLevel}}
+{% if !type.isGeneric %} CODEGEN_FAILURE_for_{{ type.name }}___Constructible_must_be_generic_type {% endif %}
+
+/// {{ type.name }}Tag is the container type for values of {{ type.name }}
+{% call accessModifierOf type %} struct {% call tagWithAnnotation type %} {
+	{% call accessModifierOf type %} typealias {% call actualType type %}
+	fileprivate let _actual: Any
+	{% call accessModifierOf type %} init{% call GEN type "T" %}(_ actual:{{ type.name }}{% call GEN type "T" %}) { self._actual = actual as Any }
+}
+
+extension {{ type.name }} : _TypeConstructor {
+	{% call accessModifierOf type %} typealias Tag = {% call TAG type %}
+	{% call accessModifierOf type %} var lift: Construct<Tag, TypeParameter> {
+		return Construct<Tag, TypeParameter>(tag: Tag(self))
+	}
+
+	{% if type.kind == "class" %}// If you get an error: Method 'lower' in non-final class '{{type.name}}{% call GEN type "T" %}' must return 'Self'
+// to conform to protocol {% call TC type %}, then make {{type.name}} final 
+	{% endif %}
+	{% call accessModifierOf type %} static func lower(_ con: Construct<Tag, TypeParameter>) -> {% call TYP type "TypeParameter" %} {
+	{% if type.name != "Optional" %}return con.tag._actual as! {{ type.name }}  {% endif %}
+	{% if type.name == "Optional" %}return con.tag._actual as? Wrapped  {% endif %}
+	}
+}
+
+{% if not type.implements.DualConstructible %}
+extension Construct where ConstructorTag == {% call TAG type %}
+{
+	{% call accessModifierOf type %} var lower: {% call TYP type "TypeParameter" %} { get {
+		return {% call TYP type "TypeParameter" %}.lower(self)
+	}}
+{% call accessModifierOf type %} var to{{ type.name }}: {{ type.name }}<TypeParameter> { get { return lower }}
+
+}
+{% endif %}
+
+{% call accessModifierOf type %} func >>>¬{% call GEN type "A" %}(left: {% call CONS type "A" %}, right: @escaping ({% call CONS type "A" %}) -> {% call TYP type "A" %}) -> {% call TYP type "A" %}
+{
+	return right(left)
+}
+
+{% call accessModifierOf type %} postfix func¬{% call GEN type "A" %}(left: {% call CONS type "A" %}) -> {% call TYP type "A" %} {
+	return {{ type.name }}.lower(left)
+}
+
+{% call accessModifierOf type %} func to{% call TYP type "A" %}(_ con:{% call CONS type "A" %}) -> {% call TYP type "A" %} {
+	return {% call TYP type "A" %}.lower(con)
+}
+
+{% if type.implements.Functor %}
+
+extension {{ type.name }}Tag : FunctorTag {
+	{% call accessModifierOf type %} static func fmap<A, B>(_ transform: @escaping (A) -> B) -> ({% call CONS type "A" %}) -> {% call CONS type "B" %} {
+	return { applyA in
+		let a = {% call TYP type "A" %}.lower(applyA)
+
+// If you get an error on the next line like "Value of type "{{ type.name }}<A> has no member fmap"  that is
+// because {{ type.name }} conforms to the Functor protocol but does not also implement this method:
+// {% call accessModifierOf type %} func fmap<B>(_ transform: @escaping (A) -> B) -> {{ type.name }}<B>
+		return a.fmap(transform)^
+	}
+	}
+}
+
+{% call accessModifierOf type %} func >>>•{% call GEN2 type "P" "Q"%}(left: {% call TYP type "P" %}, right: @escaping (P) -> Q) -> {% call TYP type "Q" %}
+{
+	return left.fmap(right)
+}
+
+
+{% endif %}
+
+
+
+{% if type.implements.Applicative or type.implements.Monad  %}
+
+{% if type.implements.Monad and not type.implements.Applicative  %}
+extension {{type.name}}: Applicative {
+   {% call accessModifierOf type %}  static func apLift{% call GEN2 type "A" "B"%}(_ fAB: {% call TYP type "(A) -> B" %}) -> ({% call TYP type "A" %}) -> {% call TYP type "B" %} {
+        return { m in
+            fAB >>>= { f in m >>>= { x in {% call TYP type "B" %}.pure( f(x) ) }}
+        }
+    }
+
+   {% call accessModifierOf type %} func ap<B>(_ fAB: {% call TYP type "(TypeParameter) -> B" %} ) -> {% call TYP type "B" %} {
+        return {% call TYP type "B" %}.apLift(fAB)(self)
+    }
+}
+{% endif %}
+
+
+extension {{type.name}}Tag : ApplicativeTag {
+	{% call accessModifierOf type %} static func pure<A>(_ a: A) -> {% call CONS type "A" %} {
+
+// If you get an error on the next line like "Value of type "{{ type.name }}<A> has no member pure"  that is
+// because {{ type.name }} conforms to the Applicative protocol but does not also implement this method:
+// {% call accessModifierOf type %} static func pure<V>(_ v: V) -> {{type.name}}<V>
+		return {% call TYP type "A" %}.pure(a)^
+	}
+
+	{% call accessModifierOf type %} static func ap<A, B>(_ fAB: {% call CONS type "(A) -> B" %}) -> ({% call CONS type "A" %}) -> {% call CONS type "B" %} {
+		return { fA in
+			let fab = {% call TYP type "(A) -> B" %}.lower(fAB)
+			let wa = {% call TYP type "A" %}.lower(fA)
+
+			// If you get an error on the next line like "Value of type "{{ type.name }}<A> has no member ap"  that is
+			// because {{ type.name }} conforms to the Applicative protocol but does not also implement this method:
+			// {% call accessModifierOf type %} func ap<B>(_ fAB: {{ type.name }}<(TypeParameter) -> B>) -> {{ type.name }}<B>
+			return wa.ap(fab)^
+		}
+	}
+}
+
+{% call accessModifierOf type %} func <*>{% call GEN2 type "P" "Q" %}(f: {% call TYP type "(P) -> Q" %}, p: {% call TYP type "P" %}) -> {% call CONS type "Q" %}
+{
+	return {{type.name}}Tag.ap(f^)(p^)
+}
+{% call accessModifierOf type %} func <*>{% call GEN2 type "P" "Q" %}(f: {% call CONS type "(P) -> Q" %}, p: {% call TYP type "P" %}) -> {% call CONS type "Q" %}
+{
+	return {{type.name}}Tag.ap(f)(p^)
+}
+
+{% call accessModifierOf type %} func <¢>{% call GEN2 type "P" "Q" %}(f: @escaping (P) -> Q, p: {% call TYP type "P" %}) -> {% call CONS type "Q" %}
+{
+	return {{type.name}}Tag.ap({{type.name}}Tag.pure(f))(p^)
+}
+
+extension Appl2 {
+	{% call accessModifierOf type %} subscript{% call GEN0 type %}(_ first: {% call TYP type "A" %}, _ second: {% call TYP type "B" %} ) -> {% call TYP type "C" %} {
+		return appl( f: f2, to: first^, second^ )¬
+	}
+}
+extension Appl3 {
+	{% call accessModifierOf type %} subscript{% call GEN0 type %}(_ first: {% call TYP type "A" %}, _ second: {% call TYP type "B" %}, _ third: {% call TYP type "C" %} ) -> {% call TYP type "D" %} {
+		return appl( f: f3, to: first^, second^, third^ )¬
+	}
+}
+extension Appl4 {
+	{% call accessModifierOf type %} subscript{% call GEN0 type %}(_ first: {% call TYP type "A" %}, _ second: {% call TYP type "B" %}, _ third: {% call TYP type "C" %}, _ fourth: {% call TYP type "D" %}  ) -> {% call TYP type "E" %} {
+		return appl( f: f4, to: first^, second^, third^, fourth^ )¬
+	}
+}
+extension Appl5 {
+	{% call accessModifierOf type %} subscript{% call GEN0 type %}(_ first: {% call TYP type "A" %}, _ second: {% call TYP type "B" %}, _ third: {% call TYP type "C" %}, _ fourth: {% call TYP type "D" %}, _ fifth: {% call TYP type "E" %}  ) -> {% call TYP type "F" %} {
+		return appl( f: f5, to: first^, second^, third^, fourth^, fifth^ )¬
+	}
+}
+extension ApplReduce {
+	{% call accessModifierOf type %} subscript{% call GEN0 type %}(_ params: {% call TYP type "Elt" %}...) -> {% call TYP type "Elt" %} {
+		return self.to(params.map(^))¬
+	}
+}
+
+{% if not type.implements.Functor %}
+
+// Auto-generating Functor instance from Applicative
+extension {{ type.name }} : Functor   {
+	{% call accessModifierOf type %} func fmap<B>(_ transform: @escaping (TypeParameter) -> B) -> {% call TYP type "B" %} {
+		return self.ap({{ type.name }}.pure(transform))
+	}
+}
+
+extension {{ type.name }}Tag : FunctorTag {
+	{% call accessModifierOf type %} static func fmap<TypeParameter, B>(_ transform: @escaping (TypeParameter) -> B) -> ({% call CONS type "TypeParameter" %}) -> {% call CONS type "B" %} {
+		return { applyA in
+			let a = {% call TYP type "TypeParameter" %}.lower(applyA)
+			return a.fmap(transform)^
+		}
+	}
+}
+
+{% endif %}
+
+{% endif %}
+
+{% if type.implements.Monad %}
+
+extension {{type.name}}Tag : MonadTag {
+
+
+	{% call accessModifierOf type %} static func bind<A,B>(_ m:{% call CONS type "A" %} ) -> ( @escaping (A) -> {% call CONS type "B" %}) -> {% call CONS type "B" %} {
+		return { fA in
+			let ml : {% call TYP type "A" %} = {% call TYP type "A" %}.lower(m)
+			let wa : (A) -> {% call TYP type "B" %} = { a in {% call TYP type "B" %}.lower(fA(a)) }
+
+			// If you get an error on the next line like "Value of type "{{ type.name }}<A> has no member bind"  that is
+			// because {{ type.name }} conforms to the Monad protocol but does not also implement this method:
+			// {% call accessModifierOf type %} func bind<B>(_ m: (TypeParameter) -> {{ type.name }}<B>) -> {{ type.name }}<B>
+			return ml.bind(wa)^
+		}
+	}
+}
+
+extension {{type.name}} {
+	{% call accessModifierOf type %} static func >>>=<B>( left: {% call TYP type "TypeParameter" %}, right: @escaping (TypeParameter) -> {% call TYP type "B" %}) -> {% call TYP type "B" %} {
+		return left.bind(right)
+	}
+}
+
+{% call accessModifierOf type %} func >=> {% call GEN3 type "A" "B" "C" %}(l: @escaping (A) -> {% call TYP type "B" %}, r: @escaping (B) -> {% call TYP type "C" %} ) -> (A) -> {% call TYP type "C" %} {
+	return { a in l(a) >>>= r }
+}
+{% call accessModifierOf type %} func <=< {% call GEN3 type "A" "B" "C" %}(l: @escaping (B) -> {% call TYP type "C" %}, r: @escaping (A) -> {% call TYP type "B" %} ) -> (A) -> {% call TYP type "C" %} {
+return { a in r(a) >>>= l }
+}
+
+{% call accessModifierOf type %} func >=> {% call GEN2 type "A" "B" %} (l: A, r: @escaping (A) -> {% call TYP type "B" %} ) -> {% call TYP type "B" %} {
+	return {% call TYP type "A" %}.pure(l) >>>= r
+}
+
+// mjoin implementation for free
+extension {{ type.name }} {
+	{% call accessModifierOf type %} func mjoin<T>() -> {% call TYP type "T" %} where TypeParameter == {% call TYP type "T" %} {
+		return self >>>= { $0 }
+	}
+}
+// Sequence functions we get from a Monad for free
+extension Sequence {
+    {% call accessModifierOf type %} func mreduce{% call GEN2 type "TypeParameter" "Result" %}(_ initialResult: Result, _ f: @escaping (Result, TypeParameter) -> {% call TYP type "Result" %}) -> {% call TYP type "Result" %} where Element == TypeParameter {
+        if let s = self.first {
+            return f(initialResult,s) >>>= { p in self.dropFirst().mreduce(p, f) }
+        } else {
+            return .pure(initialResult)
+        }
+    }
+
+    {% call accessModifierOf type %} func mfilter{% call GEN0 type %}(_ isIncluded: @escaping (Self.Element)  -> {% call TYP type "Bool" %})  -> {% call TYP type "[Self.Element]" %} {
+        if let s = self.first {
+            return isIncluded(s) >>>= { flag in
+                self.dropFirst().mfilter(isIncluded) >>>= { ys in
+                    .pure( flag ? ([s] + ys) : ys )
+                }
+            }
+        } else {
+            return .pure([])
+        }
+    }
+}
+
+
+{% if not type.implements.Functor and not type.implements.Applicative %}
+
+// Auto-generating Functor instance from Monad
+extension {{ type.name }} : Functor   {
+	{% call accessModifierOf type %} static func functorLift<B>(_ f: @escaping (TypeParameter) -> B) -> ({% call TYP type "TypeParameter" %}) -> {% call TYP type "B" %} {
+    	return { m in
+     	   m >>>= { x in {{ type.name }}.pure( f(x) ) }
+   		}
+	}
+	{% call accessModifierOf type %} func fmap<B>(_ transform: @escaping (TypeParameter) -> B) -> {% call TYP type "B" %} {
+    	return functorLift(transform)(self)
+  	}
+}
+
+{% endif %}
+
+
+{% endif %}
+
+{% endfor %}
+

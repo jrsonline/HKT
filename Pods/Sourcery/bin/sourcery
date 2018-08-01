@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# This file serves just as a link
+
+parent_path=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
+echo Location of Sourcery : "${parent_path}"/Sourcery.app/Contents/MacOS/Sourcery
+
+"${parent_path}"/Sourcery.app/Contents/MacOS/Sourcery "$@"
