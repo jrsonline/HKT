@@ -19,6 +19,9 @@
 		C033C909210B62950081120E /* Writer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03422B420F05AAE00528AEF /* Writer.swift */; };
 		C033C90B210B657F0081120E /* ZipArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C033C90A210B657E0081120E /* ZipArray.swift */; };
 		C03422D2210B606A00528AEF /* HKTFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = C03422C4210B606A00528AEF /* HKTFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C037CA0521115C0B00900437 /* PlaygroundWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = C037CA0321115C0B00900437 /* PlaygroundWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C037CA0921115C1D00900437 /* HKTBlogFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0E03506210EB4FF00A4C5BA /* HKTBlogFramework.framework */; };
+		C037CA0A21115C1D00900437 /* HKTFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C03422C2210B606A00528AEF /* HKTFramework.framework */; };
 		C0E0350A210EB4FF00A4C5BA /* HKTBlogFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = C0E03508210EB4FF00A4C5BA /* HKTBlogFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C0E03510210EB51300A4C5BA /* helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C008F84420EF08ED004898BC /* helpers.swift */; };
 		C0E03511210EB54B00A4C5BA /* WebData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C033C90C210B65880081120E /* WebData.swift */; };
@@ -51,11 +54,14 @@
 		C03422C2210B606A00528AEF /* HKTFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HKTFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C03422C4210B606A00528AEF /* HKTFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HKTFramework.h; sourceTree = "<group>"; };
 		C03422C5210B606A00528AEF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C037CA0121115C0B00900437 /* PlaygroundWrapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PlaygroundWrapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C037CA0321115C0B00900437 /* PlaygroundWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlaygroundWrapper.h; sourceTree = "<group>"; };
+		C037CA0421115C0B00900437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C052027520ED48BC0063F901 /* sourcery.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sourcery.stencil; sourceTree = "<group>"; };
 		C052028220ED90440063F901 /* Monoid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Monoid.swift; sourceTree = "<group>"; };
 		C052028420ED90440063F901 /* Future.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Future.swift; sourceTree = "<group>"; };
 		C052028620ED90440063F901 /* Monad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Monad.swift; sourceTree = "<group>"; };
-		C06F83E221115615003C6D07 /* HKTBlogPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = HKTBlogPlayground.playground; sourceTree = SOURCE_ROOT; };
+		C06F83E221115615003C6D07 /* HKTBlogPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = HKTBlogPlayground.playground; path = PlaygroundWrapper/HKTBlogPlayground.playground; sourceTree = SOURCE_ROOT; };
 		C0E03506210EB4FF00A4C5BA /* HKTBlogFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HKTBlogFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0E03508210EB4FF00A4C5BA /* HKTBlogFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HKTBlogFramework.h; sourceTree = "<group>"; };
 		C0E03509210EB4FF00A4C5BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -68,6 +74,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C037C9FE21115C0B00900437 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C037CA0921115C1D00900437 /* HKTBlogFramework.framework in Frameworks */,
+				C037CA0A21115C1D00900437 /* HKTFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,9 +108,9 @@
 		2AE0ECC62022A6BD00939C4C = {
 			isa = PBXGroup;
 			children = (
-				C06F83D921115525003C6D07 /* Playground */,
 				2AE0ECED2022AC4C00939C4C /* Podfile */,
 				2AE0ECEB2022A81900939C4C /* README.md */,
+				C037CA0221115C0B00900437 /* PlaygroundWrapper */,
 				C0E03507210EB4FF00A4C5BA /* HKTBlogFramework */,
 				C03422C3210B606A00528AEF /* HKTFramework */,
 				2AE0ECD02022A6BD00939C4C /* Products */,
@@ -109,6 +124,7 @@
 			children = (
 				C03422C2210B606A00528AEF /* HKTFramework.framework */,
 				C0E03506210EB4FF00A4C5BA /* HKTBlogFramework.framework */,
+				C037CA0121115C0B00900437 /* PlaygroundWrapper.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -194,6 +210,16 @@
 			path = "Useful Types";
 			sourceTree = "<group>";
 		};
+		C037CA0221115C0B00900437 /* PlaygroundWrapper */ = {
+			isa = PBXGroup;
+			children = (
+				C06F83E221115615003C6D07 /* HKTBlogPlayground.playground */,
+				C037CA0321115C0B00900437 /* PlaygroundWrapper.h */,
+				C037CA0421115C0B00900437 /* Info.plist */,
+			);
+			path = PlaygroundWrapper;
+			sourceTree = "<group>";
+		};
 		C052027620ED660B0063F901 /* Sourcery */ = {
 			isa = PBXGroup;
 			children = (
@@ -201,14 +227,6 @@
 				2AE0ECF02022C89400939C4C /* sourcery.generated.swift */,
 			);
 			path = Sourcery;
-			sourceTree = "<group>";
-		};
-		C06F83D921115525003C6D07 /* Playground */ = {
-			isa = PBXGroup;
-			children = (
-				C06F83E221115615003C6D07 /* HKTBlogPlayground.playground */,
-			);
-			path = Playground;
 			sourceTree = "<group>";
 		};
 		C0E03507210EB4FF00A4C5BA /* HKTBlogFramework */ = {
@@ -231,6 +249,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				C03422D2210B606A00528AEF /* HKTFramework.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C037C9FC21115C0B00900437 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C037CA0521115C0B00900437 /* PlaygroundWrapper.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,6 +288,24 @@
 			name = HKTFramework;
 			productName = HKTFramework;
 			productReference = C03422C2210B606A00528AEF /* HKTFramework.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		C037CA0021115C0B00900437 /* PlaygroundWrapper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C037CA0621115C0B00900437 /* Build configuration list for PBXNativeTarget "PlaygroundWrapper" */;
+			buildPhases = (
+				C037C9FC21115C0B00900437 /* Headers */,
+				C037C9FD21115C0B00900437 /* Sources */,
+				C037C9FE21115C0B00900437 /* Frameworks */,
+				C037C9FF21115C0B00900437 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PlaygroundWrapper;
+			productName = PlaygroundWrapper;
+			productReference = C037CA0121115C0B00900437 /* PlaygroundWrapper.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		C0E03505210EB4FF00A4C5BA /* HKTBlogFramework */ = {
@@ -297,6 +341,10 @@
 						CreatedOnToolsVersion = 10.0;
 						ProvisioningStyle = Automatic;
 					};
+					C037CA0021115C0B00900437 = {
+						CreatedOnToolsVersion = 10.0;
+						ProvisioningStyle = Automatic;
+					};
 					C0E03505210EB4FF00A4C5BA = {
 						CreatedOnToolsVersion = 10.0;
 						ProvisioningStyle = Automatic;
@@ -318,12 +366,20 @@
 			targets = (
 				C03422C1210B606A00528AEF /* HKTFramework */,
 				C0E03505210EB4FF00A4C5BA /* HKTBlogFramework */,
+				C037CA0021115C0B00900437 /* PlaygroundWrapper */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C03422C0210B606A00528AEF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C037C9FF21115C0B00900437 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -394,6 +450,13 @@
 				C033C903210B628D0081120E /* Applicative.swift in Sources */,
 				C033C909210B62950081120E /* Writer.swift in Sources */,
 				C033C900210B62880081120E /* sourcery.generated.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C037C9FD21115C0B00900437 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -574,6 +637,59 @@
 			};
 			name = Release;
 		};
+		C037CA0721115C0B00900437 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = PlaygroundWrapper/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.strictlyswift.PlaygroundWrapper;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		C037CA0821115C0B00900437 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = PlaygroundWrapper/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.strictlyswift.PlaygroundWrapper;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		C0E0350C210EB4FF00A4C5BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -642,6 +758,15 @@
 			buildConfigurations = (
 				C03422D4210B606A00528AEF /* Debug */,
 				C03422D5210B606A00528AEF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C037CA0621115C0B00900437 /* Build configuration list for PBXNativeTarget "PlaygroundWrapper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C037CA0721115C0B00900437 /* Debug */,
+				C037CA0821115C0B00900437 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
