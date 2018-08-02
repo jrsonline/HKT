@@ -6,6 +6,9 @@ import HKTFramework
 
  # 3. Monad Menagerie
  [Previous Page: Monad Magic](@previous)
+ 
+ See [article.](https://medium.com/@JLHLonline/a-monad-menagerie-15e5b96d9ca7)
+ 
  ## Writers
  */
 /*:
