@@ -412,7 +412,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"$PODS_ROOT/Sourcery/bin/sourcery\" --sources \"$SRCROOT/HKTFramework\" --templates \"$SRCROOT/HKTFramework/Sourcery\"  --output \"$SRCROOT/HKTFramework/Sourcery\"\n";
+			shellScript = "if [ \"$RUNSOURCERY\" = \"YES\" ] \nthen\n     echo Running Sourcery to generaate Sourcery/sourcery.generated.swift.   To NOT run, set RUNSOURCERY=NO\n    \"$PODS_ROOT/Sourcery/bin/sourcery\" --sources \"$SRCROOT/HKTFramework\" --templates \"$SRCROOT/HKTFramework/Sourcery\"  --output \"$SRCROOT/HKTFramework/Sourcery\"\nelse\n    echo NOT running Sourcery. To run, set RUNSOURCERY=YES\nfi\n";
 		};
 		C06F83D12111506B003C6D07 /* Run Sourcery to generate code */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -430,7 +430,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"$PODS_ROOT/Sourcery/bin/sourcery\" --sources \"$SRCROOT/HKTBlogFramework\" --templates \"$SRCROOT/HKTBlogFramework/Sourcery\"  --output \"$SRCROOT/HKTFramework/Sourcery\"\n";
+			shellScript = "if [ \"$RUNSOURCERY\" = \"YES\" ] \nthen\n    echo Running Sourcery to generaate Sourcery/sourcery.generated.swift.   To NOT run, set RUNSOURCERY=NO\n    \"$PODS_ROOT/Sourcery/bin/sourcery\" --sources \"$SRCROOT/HKTBlogFramework\" --templates \"$SRCROOT/HKTBlogFramework/Sourcery\"  --output \"$SRCROOT/HKTFramework/Sourcery\"\nelse\n    echo NOT running Sourcery. To run, set RUNSOURCERY=YES\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -605,6 +605,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				PRODUCT_BUNDLE_IDENTIFIER = com.strictlyswift.HKTFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				RUNSOURCERY = NO;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -630,6 +631,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.strictlyswift.HKTFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				RUNSOURCERY = NO;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -709,6 +711,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				PRODUCT_BUNDLE_IDENTIFIER = com.strictlyswift.HKTBlogFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				RUNSOURCERY = NO;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -734,6 +737,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.strictlyswift.HKTBlogFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				RUNSOURCERY = NO;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
