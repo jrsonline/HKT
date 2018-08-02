@@ -5,6 +5,8 @@ import HKTFramework
  ## HKT Playground
    # 1. Applicatives
  [Next Page: Monad Magic](@next)
+ 
+ See [article](https://medium.com/@JLHLonline/a-world-beyond-swift-maps-f73397d4504)
    ## WebData
 */
 //: Calculate retirement fund. Note, no WebData here.

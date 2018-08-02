@@ -7,6 +7,8 @@ import HKTFramework
  [Previous Page: Applicatives](@previous)
  
  [Next Page: Monad Menagerie](@next)
+ 
+ See [article.](https://medium.com/@JLHLonline/monad-magic-d355a761e294)
 ## WebData Again
 */
 //: Let's say we get some input from the web
