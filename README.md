@@ -19,6 +19,10 @@ https://medium.com/@JLHLonline/monad-magic-d355a761e294
 https://medium.com/@JLHLonline/a-monad-menagerie-15e5b96d9ca7
 
 
+...and one more that's not HKT-related:
+https://medium.com/@JLHLonline/machine-learning-in-swift-the-matrix-5ff1c8fd5e96
+
+
 ## Building 
 
 This has been built using XCode 10.  Files may need recompiling if you are not using XCode 10, even to run the Playground. Build both HKTFramework and HKTBlogFramework.  It's not necessary to run Sourcery to do the build -- in the Build Settings set RUNSOURCERY to NO to not run Sourcery.
